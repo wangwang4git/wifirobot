@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:screenOrientation="landscape">
+
+    <com.linkspritedirect.mjpgview.MjpegView
+        android:id="@+id/sv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+        
+      <SeekBar
+        android:id="@+id/sb_horizon"
+        android:layout_height="wrap_content"
+        android:layout_width="220dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/bt_advance"
+        android:layout_marginBottom="65dp"
+        android:layout_marginRight="24dp"
+        android:max="100" />
+    
+    <SeekBar
+        android:id="@+id/sb_vertical"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/bt_advance"
+        android:layout_marginBottom="65dp"
+        android:layout_marginLeft="24dp"
+        android:max="100" />
+
+
+
+
+    <Button
+        android:id="@+id/bt_advance"
+        android:layout_width="66dp"
+        android:layout_height="55dp"
+        android:layout_alignBottom="@+id/bt_stop"
+        android:layout_marginBottom="70dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/bt_advance" />
+
+    <Button
+        android:id="@+id/bt_stop"
+        android:layout_width="66dp"
+        android:layout_height="55dp"
+        android:layout_alignBaseline="@+id/sv"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/bt_stop" />
+
+    <Button
+        android:id="@+id/bt_right"
+        android:layout_width="66dp"
+        android:layout_height="55dp"
+        android:layout_alignBaseline="@+id/sv"
+        android:layout_alignLeft="@+id/bt_stop"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="70dp"
+        android:text="@string/bt_right" />
+
+    <Button
+        android:id="@+id/bt_left"
+        android:layout_width="66dp"
+        android:layout_height="55dp"
+        android:layout_alignBaseline="@+id/sv"
+        android:layout_alignRight="@+id/bt_stop"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="70dp"
+        android:text="@string/bt_left" />
+
+    <Button
+        android:id="@+id/bt_retreat"
+        android:layout_width="66dp"
+        android:layout_height="55dp"
+        android:layout_alignTop="@+id/bt_stop"
+        android:layout_marginTop="70dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/bt_retreat" />
+
+
+
+</RelativeLayout>
