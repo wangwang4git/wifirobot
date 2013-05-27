@@ -1,7 +1,12 @@
 package com.linkspritedirect.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,6 +52,13 @@ public class Monitor extends Activity {
 	private WifiRobotControlClient mClient = null;
 	private Thread mControlThread = null;
 	private Handler mHandler = null;
+	
+	// 系统Sensor管理器
+	private SensorManager sensorManager = null;
+	// 系统Sensor监听器
+	private AccelerometerOnTouchListener accelerometerListener = null;
+	// 重力感应开启
+	private boolean isOpenSensor = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +93,7 @@ public class Monitor extends Activity {
 
 		sv_camera = (MjpegView) findViewById(R.id.sv);
 		// 设置自定义双击事件监听器
-		sv_camera.setOnTouchListener(new ButtonOnTouchListener());
+		sv_camera.setOnTouchListener(new cameraOnTouchListener());
 		String cameraURL = "http://" + System_data.videoAddr_store.trim() + ":"
 				+ System_data.videoPort_store.trim() + "/?action=stream";
 		sv_camera.setSource(MjpegInputStream.read(cameraURL));
@@ -117,6 +129,27 @@ public class Monitor extends Activity {
 				Integer.parseInt(System_data.controlPort_store.trim()));
 		mControlThread = new Thread(mClient);
 		mControlThread.start();
+		
+		// 获取系统的传感器管理服务
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		accelerometerListener = new AccelerometerOnTouchListener();
+		isOpenSensor = false;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// 为系统的加速度传感器注册监听器
+		sensorManager.registerListener(accelerometerListener,
+				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+	@Override
+	protected void onStop() {
+		// 取消注册
+		sensorManager.unregisterListener(accelerometerListener);
+		super.onStop();
 	}
 
 	@Override
@@ -224,7 +257,6 @@ public class Monitor extends Activity {
 	}
 
 	private OnSeekBarChangeListener seekBarListener = new OnSeekBarChangeListener() {
-
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
@@ -269,7 +301,6 @@ public class Monitor extends Activity {
 			}
 			}
 		}
-
 	};
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -294,7 +325,7 @@ public class Monitor extends Activity {
 	// 双击间隔时间
 	private int deltaTime = 500;
 
-	private class ButtonOnTouchListener implements OnTouchListener {
+	private class cameraOnTouchListener implements OnTouchListener {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			{
@@ -334,4 +365,24 @@ public class Monitor extends Activity {
 			lastClick = 0;
 		}
 	}
+	
+	/*
+	 * 功能： 自定义重力感应监听器
+	 */
+	private class AccelerometerOnTouchListener implements SensorEventListener {
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			// TODO Auto-generated method stub
+			// float[] values = event.values;
+			// values[0] X方向上的加速度
+			// values[1] Y方向上的加速度
+			// values[2] Z方向上的加速度
+		}
+	}
+	
 }
