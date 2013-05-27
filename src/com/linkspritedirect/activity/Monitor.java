@@ -69,13 +69,14 @@ public class Monitor extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		setContentView(R.layout.monitor);
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		setContentView(R.layout.activity_monitor);
 
 		bt_advance = (Button) findViewById(R.id.bt_advance);
 		bt_retreat = (Button) findViewById(R.id.bt_retreat);
 		bt_right = (Button) findViewById(R.id.bt_right);
 		bt_left = (Button) findViewById(R.id.bt_left);
-		bt_stop = (Button) findViewById(R.id.bt_stop);
+		//bt_stop = (Button) findViewById(R.id.bt_stop);
 
 		sb_vertical = (SeekBar) findViewById(R.id.sb_vertical);
 		sb_vertical.setProgress(50);
@@ -86,7 +87,7 @@ public class Monitor extends Activity {
 		bt_retreat.setOnTouchListener(new ClickEvent());
 		bt_right.setOnTouchListener(new ClickEvent());
 		bt_left.setOnTouchListener(new ClickEvent());
-		bt_stop.setOnTouchListener(new ClickEvent());
+		//bt_stop.setOnTouchListener(new ClickEvent());
 
 		sb_vertical.setOnSeekBarChangeListener(this.seekBarListener);
 		sb_horizon.setOnSeekBarChangeListener(this.seekBarListener);
@@ -234,7 +235,7 @@ public class Monitor extends Activity {
 				}
 				break;
 			}
-			case R.id.bt_stop: {
+/*			case R.id.bt_stop: {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
@@ -250,7 +251,7 @@ public class Monitor extends Activity {
 				}
 				}
 				break;
-			}
+			}*/
 			}
 			return false;
 		}
