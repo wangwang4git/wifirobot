@@ -17,8 +17,11 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.linkspritedirect.R;
@@ -28,19 +31,19 @@ import com.linkspritedirect.mjpgview.MjpegView;
 import com.linkspritedirect.socket.WifiRobotControlClient;
 
 public class Monitor extends Activity {
-	private static final String ADVANCE = "T";
-	private static final String RETREAT = "B";
-	private static final String RIGHT = "R";
-	private static final String LEFT = "L";
-	private static final String STOP = "0";
-	private static final String VERTICAL = "V";
-	private static final String HORIZON = "H";
+	private String ADVANCE = null;
+	private String RETREAT = null;
+	private String LEFT = null;
+	private String RIGHT = null;
+	private String STOP = null;
+	
+	private String HORIZON = null;
+	private String VERTICAL = null;
 
 	public Button bt_advance;
 	public Button bt_retreat;
 	public Button bt_right;
 	public Button bt_left;
-	public Button bt_stop;
 
 	public SeekBar sb_vertical;
 	public SeekBar sb_horizon;
@@ -58,6 +61,7 @@ public class Monitor extends Activity {
 	// 系统Sensor监听器
 	private AccelerometerOnTouchListener accelerometerListener = null;
 	// 重力感应开启
+	private CheckBox mGravity = null;
 	private boolean isOpenSensor = false;
 
 	@Override
@@ -72,11 +76,19 @@ public class Monitor extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.activity_monitor);
 
+		ADVANCE = System_data.up_store;
+		RETREAT = System_data.down_store;
+		LEFT = System_data.left_store;
+		RIGHT = System_data.right_store;
+		STOP = System_data.stop_store;
+		
+		HORIZON = System_data.camera_h_store;
+		VERTICAL = System_data.camera_v_store;
+		
 		bt_advance = (Button) findViewById(R.id.bt_advance);
 		bt_retreat = (Button) findViewById(R.id.bt_retreat);
 		bt_right = (Button) findViewById(R.id.bt_right);
 		bt_left = (Button) findViewById(R.id.bt_left);
-		//bt_stop = (Button) findViewById(R.id.bt_stop);
 
 		sb_vertical = (SeekBar) findViewById(R.id.sb_vertical);
 		sb_vertical.setProgress(50);
@@ -87,7 +99,6 @@ public class Monitor extends Activity {
 		bt_retreat.setOnTouchListener(new ClickEvent());
 		bt_right.setOnTouchListener(new ClickEvent());
 		bt_left.setOnTouchListener(new ClickEvent());
-		//bt_stop.setOnTouchListener(new ClickEvent());
 
 		sb_vertical.setOnSeekBarChangeListener(this.seekBarListener);
 		sb_horizon.setOnSeekBarChangeListener(this.seekBarListener);
@@ -134,6 +145,43 @@ public class Monitor extends Activity {
 		// 获取系统的传感器管理服务
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		accelerometerListener = new AccelerometerOnTouchListener();
+		mGravity = (CheckBox) findViewById(R.id.cb_gravity);
+		mGravity.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				if (isChecked) {
+					isOpenSensor = true;
+
+					bt_advance.setVisibility(View.INVISIBLE);
+					bt_retreat.setVisibility(View.INVISIBLE);
+					bt_right.setVisibility(View.INVISIBLE);
+					bt_left.setVisibility(View.INVISIBLE);
+
+					((TextView) findViewById(R.id.tv_vertical))
+							.setVisibility(View.INVISIBLE);
+					((TextView) findViewById(R.id.tv_horizon))
+							.setVisibility(View.INVISIBLE);
+					sb_vertical.setVisibility(View.INVISIBLE);
+					sb_horizon.setVisibility(View.INVISIBLE);
+				} else {
+					isOpenSensor = false;
+
+					bt_advance.setVisibility(View.VISIBLE);
+					bt_retreat.setVisibility(View.VISIBLE);
+					bt_right.setVisibility(View.VISIBLE);
+					bt_left.setVisibility(View.VISIBLE);
+
+					((TextView) findViewById(R.id.tv_vertical))
+							.setVisibility(View.VISIBLE);
+					((TextView) findViewById(R.id.tv_horizon))
+							.setVisibility(View.VISIBLE);
+					sb_vertical.setVisibility(View.VISIBLE);
+					sb_horizon.setVisibility(View.VISIBLE);
+				}
+			}
+		});
 		isOpenSensor = false;
 	}
 
@@ -235,23 +283,6 @@ public class Monitor extends Activity {
 				}
 				break;
 			}
-/*			case R.id.bt_stop: {
-				int action = event.getAction();
-				switch (action) {
-				case MotionEvent.ACTION_DOWN: {
-					mClient.send(STOP);
-					break;
-				}
-				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
-					break;
-				}
-				default: {
-					break;
-				}
-				}
-				break;
-			}*/
 			}
 			return false;
 		}

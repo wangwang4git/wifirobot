@@ -28,7 +28,8 @@
 			android:screenOrientation="landscape"></activity>
         <activity android:name="com.linkspritedirect.activity.Set"
             android:screenOrientation="landscape"></activity>
-        <activity android:name="com.linkspritedirect.activity.about"></activity>
+        <activity android:name="com.linkspritedirect.activity.about"
+        	android:screenOrientation="landscape"></activity>
     </application>
     
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

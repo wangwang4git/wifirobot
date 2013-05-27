@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.linkspritedirect.R;
@@ -29,6 +30,17 @@ public class Set extends Activity {
 	public String videoAddr_temp;
 	public String controlPort_temp;
 	public String videoPort_temp;
+	
+	private EditText et_up = null;
+	private EditText et_down = null;
+	private EditText et_left = null;
+	private EditText et_right = null;
+	private EditText et_stop = null;
+	
+	private EditText et_camera_h = null;
+	private EditText et_camera_v = null;
+	private CheckBox cb_h_number = null;
+	private CheckBox cb_v_number = null;
 	
 
 	@Override
@@ -59,6 +71,25 @@ public class Set extends Activity {
 		bt_cancel.setOnClickListener(new bt_clickEvent());
 	 
 		
+		et_up = (EditText) findViewById(R.id.et_up);
+		et_down = (EditText) findViewById(R.id.et_down);
+		et_left = (EditText) findViewById(R.id.et_left);
+		et_right = (EditText) findViewById(R.id.et_right);
+		et_stop = (EditText) findViewById(R.id.et_stop);
+		
+		et_camera_h = (EditText) findViewById(R.id.et_camera_h);
+		et_camera_v = (EditText) findViewById(R.id.et_camera_v);
+		
+		et_up.setText(System_data.up_store);
+		et_down.setText(System_data.down_store);
+		et_left.setText(System_data.left_store);
+		et_right.setText(System_data.right_store);
+		et_stop.setText(System_data.stop_store);
+		
+		et_camera_h.setText(System_data.camera_h_store);
+		et_camera_v.setText(System_data.camera_v_store);
+		cb_h_number = (CheckBox) findViewById(R.id.cb_h_number);
+		cb_v_number = (CheckBox) findViewById(R.id.cb_v_number);
 	}
 	
 	
@@ -113,6 +144,17 @@ public class Set extends Activity {
 		public static String controlPort_store="5000";
 		public static String videoAddr_store="10.10.10.101";
 		public static String videoPort_store="8090";
+		
+		public static String up_store = "w";
+		public static String down_store = "s";
+		public static String left_store = "a";
+		public static String right_store = "d";
+		public static String stop_store = "0";
+
+		public static String camera_h_store = "h";
+		public static boolean camera_h_num_store = false;
+		public static String camera_v_store = "v";
+		public static boolean camera_v_num_store = false;
 	}
 	
 	
@@ -158,7 +200,27 @@ public class Set extends Activity {
 				et_videoAddr.setText(System_data.videoAddr_store);
 				et_videoPort.setText(System_data.videoPort_store);
 				
-				
+				System_data.up_store = et_up.getText().toString();
+				System_data.down_store = et_down.getText().toString();
+				System_data.left_store = et_left.getText().toString();
+				System_data.right_store = et_right.getText().toString();
+				System_data.stop_store = et_stop.getText().toString();
+
+				System_data.camera_h_store = et_camera_h.getText().toString();
+				System_data.camera_v_store = et_camera_v.getText().toString();
+				System_data.camera_h_num_store =  cb_h_number.isChecked();
+				System_data.camera_v_num_store =  cb_v_number.isChecked();
+
+				et_up.setText(System_data.up_store);
+				et_down.setText(System_data.down_store);
+				et_left.setText(System_data.left_store);
+				et_right.setText(System_data.right_store);
+				et_stop.setText(System_data.stop_store);
+
+				et_camera_h.setText(System_data.camera_h_store);
+				et_camera_v.setText(System_data.camera_v_store);
+				cb_h_number.setChecked(System_data.camera_h_num_store);
+				cb_v_number.setChecked(System_data.camera_v_num_store);
 			}
 			
 		});
@@ -175,6 +237,17 @@ public class Set extends Activity {
 				et_controlPort.setText(System_data.controlPort_store);
 				et_videoAddr.setText(System_data.videoAddr_store);
 				et_videoPort.setText(System_data.videoPort_store);
+				
+				et_up.setText(System_data.up_store);
+				et_down.setText(System_data.down_store);
+				et_left.setText(System_data.left_store);
+				et_right.setText(System_data.right_store);
+				et_stop.setText(System_data.stop_store);
+				
+				et_camera_h.setText(System_data.camera_h_store);
+				et_camera_v.setText(System_data.camera_v_store);
+				cb_h_number.setChecked(System_data.camera_h_num_store);
+				cb_v_number.setChecked(System_data.camera_v_num_store);
 			}
 
 			
@@ -202,7 +275,16 @@ public class Set extends Activity {
 				et_videoAddr.setText(System_data.videoAddr_store);
 				et_videoPort.setText(System_data.videoPort_store);
 				
+				et_up.setText(System_data.up_store);
+				et_down.setText(System_data.down_store);
+				et_left.setText(System_data.left_store);
+				et_right.setText(System_data.right_store);
+				et_stop.setText(System_data.stop_store);
 				
+				et_camera_h.setText(System_data.camera_h_store);
+				et_camera_v.setText(System_data.camera_v_store);
+				cb_h_number.setChecked(System_data.camera_h_num_store);
+				cb_v_number.setChecked(System_data.camera_v_num_store);
 			}
 			
 		});
@@ -230,6 +312,28 @@ public class Set extends Activity {
 				et_controlPort.setText(System_data.controlPort_store);
 				et_videoAddr.setText(System_data.videoAddr_store);
 				et_videoPort.setText(System_data.videoPort_store);
+				
+				System_data.up_store = et_up.getText().toString();
+				System_data.down_store = et_down.getText().toString();
+				System_data.left_store = et_left.getText().toString();
+				System_data.right_store = et_right.getText().toString();
+				System_data.stop_store = et_stop.getText().toString();
+
+				System_data.camera_h_store = et_camera_h.getText().toString();
+				System_data.camera_v_store = et_camera_v.getText().toString();
+				System_data.camera_h_num_store =  cb_h_number.isChecked();
+				System_data.camera_v_num_store =  cb_v_number.isChecked();
+
+				et_up.setText(System_data.up_store);
+				et_down.setText(System_data.down_store);
+				et_left.setText(System_data.left_store);
+				et_right.setText(System_data.right_store);
+				et_stop.setText(System_data.stop_store);
+
+				et_camera_h.setText(System_data.camera_h_store);
+				et_camera_v.setText(System_data.camera_v_store);
+				cb_h_number.setChecked(System_data.camera_h_num_store);
+				cb_v_number.setChecked(System_data.camera_v_num_store);
 			}
 
 			

@@ -21,8 +21,8 @@
     <string name="tv_down">下</string>
     <string name="tv_right">右</string>
     <string name="tv_left">左</string>
-    <string name="tv_camera_h">摄像头水平方向</string>
-    <string name="tv_camera_v">摄像头垂直方向</string>
+    <string name="tv_camera_h">水平</string>
+    <string name="tv_camera_v">垂直</string>
     <string name="tv_stop">停止</string>
     <string name="tv_horizon">H</string>
     <string name="tv_vertical">V</string>

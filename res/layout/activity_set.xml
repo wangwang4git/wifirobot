@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/setbackgroun07" >
     <LinearLayout 
         android:layout_weight="1"
         android:layout_width="match_parent"
@@ -29,9 +30,15 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="@string/tv_videoAddr"
-                    android:textColor="#FFFFFF"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
-                    "
+                
+                <EditText
+                    android:id="@+id/et_videoAddr"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_videoAddr"
+                    android:layout_alignParentTop="true"
+                    android:inputType="textUri"/>
                     
 
             </LinearLayout>
@@ -42,6 +49,23 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
                 
+                <TextView
+                    android:id="@+id/tv_videoPort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/tv_videoPort"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                
+                <EditText
+                    android:id="@+id/et_videoPort"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_videoPort"
+                    android:layout_alignParentTop="true"
+                    android:inputType="number"/>
+                
             </LinearLayout>
            
             <LinearLayout 
@@ -49,6 +73,23 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+                
+                <TextView
+                    android:id="@+id/tv_controlAddr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/tv_controlAddr"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                
+                <EditText
+                    android:id="@+id/et_controlAddr"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_controlAddr"
+                    android:layout_alignParentTop="true"
+                    android:inputType="text"/>
                 
             </LinearLayout>
             
@@ -58,6 +99,23 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
                 
+                <TextView
+                    android:id="@+id/tv_controlPort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/tv_controlPort"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                
+                <EditText
+                    android:id="@+id/et_controlPort"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_controlPort"
+                    android:layout_alignParentTop="true"
+                    android:inputType="number"/>
+                
             </LinearLayout>
                      
             <LinearLayout 
@@ -65,6 +123,22 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+                
+                <TextView
+                    android:id="@+id/tv_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/tv_stop"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                <EditText 
+                    android:id="@+id/et_stop"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_stop"
+                    android:layout_alignParentTop="true"
+                    android:inputType="text"/> 
                 
             </LinearLayout>
         </LinearLayout>
@@ -75,12 +149,202 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                
+                <TextView 
+                    android:id="@+id/tv_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="机器人控制设置"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                "
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                
+                <TextView 
+                    android:id="@+id/tv_up"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/tv_up"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                
+                <EditText
+                    android:id="@+id/et_up"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_up"
+                    android:inputType="text"/>
+                
+               <TextView 
+                    android:id="@+id/tv_down"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@+id/et_up"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/tv_down"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                
+                <EditText
+                    android:id="@+id/et_down"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_down"
+                    android:inputType="text"/>"
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                
+                <TextView 
+                    android:id="@+id/tv_left"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/tv_left"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                
+                <EditText
+                    android:id="@+id/et_left"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_left"
+                    android:inputType="text"/>
+                
+               <TextView 
+                    android:id="@+id/tv_right"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@+id/et_left"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/tv_right"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                
+                <EditText
+                    android:id="@+id/et_right"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_right"
+                    android:inputType="text"/>
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                
+                <TextView 
+                    android:id="@+id/tv_camera_h"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/tv_camera_h"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                
+                <EditText 
+                    android:id="@+id/et_camera_h"
+                    android:layout_width="62dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_camera_h"
+                    android:inputType="text"/>
+                
+                <TextView
+                    android:id="@+id/tv_h_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/et_camera_h"
+                    android:text="数据传送"
+                    android:layout_marginLeft="25dp"/>
+                
+                <CheckBox 
+                    android:id="@+id/cb_h_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_h_number"/>
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                
+                <TextView 
+                    android:id="@+id/tv_camera_v"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/tv_camera_v"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                
+                <EditText 
+                    android:id="@+id/et_camera_v"
+                    android:layout_width="62dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_camera_v"
+                    android:inputType="text"/>
+                
+                <TextView
+                    android:id="@+id/tv_v_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/et_camera_v"
+                    android:text="数据传送"
+                    android:layout_marginLeft="25dp"/>
+                
+                <CheckBox 
+                    android:id="@+id/cb_v_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_v_number"/>
+                
+                
+            </LinearLayout>
+            
+
+            
         </LinearLayout>
         
     </LinearLayout>
     
     <LinearLayout 
-        android:layout_weight="6"
+        android:layout_weight="4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"

@@ -10,12 +10,10 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -23,7 +21,6 @@ import com.linkspritedirect.R;
 
 public class Introduction extends Activity {
 	public Button bt_start;
-	//public Button bt_setting;
 	public static final int MENU_SET_ID=Menu.FIRST;
 	public static final int MENU_ABOUT_ID=Menu.FIRST+1;
     public ImageButton ib_start;
@@ -37,10 +34,7 @@ public class Introduction extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		setContentView(R.layout.activity_introduction);
-		//bt_start = (Button)findViewById(R.id.bt_start);
 		ib_start =  (ImageButton)findViewById(R.id.ib_start);
-		//bt_setting=(Button)findViewById(R.id.bt_set);
-		//btn_listener ClickEvent=new btn_listener();
 		
 		ib_start.setOnClickListener(new OnClickListener()
 		{
@@ -55,51 +49,6 @@ public class Introduction extends Activity {
 			}
 			
 		});
-		
-		/*ib_start.setOnTouchListener(new OnTouchListener()
-		{
-
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				// TODO Auto-generated method stub
-				if(arg1.getAction()==MotionEvent.ACTION_UP)
-				{
-					ib_start.setBackgroundResource(R.drawable.imgbutton02);
-					
-					Intent intent = new Intent();
-					intent.setClass(Introduction.this,Monitor.class);
-					startActivity(intent);
-					Introduction.this.finish();
-				}
-				
-				else if(arg1.getAction()==MotionEvent.ACTION_DOWN)
-				{
-					//ib_start.setBackgroundResource(R.drawable.imgbutton02);
-				}
-				
-				return false;
-			}
-			
-		});*/
-/*		bt_start.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent=new Intent();
-				intent.setClass(Introduction.this,Monitor.class);
-				startActivity(intent);
-				Introduction.this.finish();
-				
-			}
-			
-		});*/
-
-		
-
-
-
 	}
 
 	@Override
@@ -146,8 +95,6 @@ public class Introduction extends Activity {
 		if(keyCode==KeyEvent.KEYCODE_BACK)
 		{
 			dialog();
-	
-
 		}
 		return false;
 	}
@@ -179,7 +126,4 @@ public class Introduction extends Activity {
 		
 		builder.create().show();
 	}
-	
-	
-
 }

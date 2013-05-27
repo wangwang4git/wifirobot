@@ -94,5 +94,22 @@
         android:layout_marginBottom="10dp"
         android:text="@string/bt_advance"/>
     
+    <CheckBox
+        android:id="@+id/cb_gravity"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/tv_gravity"/>
+    
+    <TextView
+        android:id="@+id/tv_gravity"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="重力感应"
+        android:background="#FFFFFF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="14dp"/>
+    
 
 </RelativeLayout>
