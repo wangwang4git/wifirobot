@@ -7,25 +7,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Introduction"
-    android:background="@drawable/background02" >
+    android:background="@drawable/introduction5" >
 
-    <Button
-        android:id="@+id/bt_start"
+    <ImageButton
+        android:id="@+id/ib_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="94dp"
-        android:text="@string/start" />
-
-    <Button
-        android:id="@+id/bt_set"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/bt_start"
-        android:layout_below="@+id/bt_start"
-        android:layout_marginTop="26dp"
-        android:text="@string/setting" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="26dp"
+        android:background="@drawable/ib_startselector"/>
 
 </RelativeLayout>
