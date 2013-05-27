@@ -15,7 +15,17 @@
     <string name="bt_retreat">后</string>
     <string name="bt_stop">停</string>
     <string name="bt_left">左</string>
-    <string name="save">保存</string>
-    <string name="cancel">取消</string>
+    <string name="bt_save">保存</string>
+    <string name="bt_cancel">取消</string>
+    <string name="tv_up">上</string>
+    <string name="tv_down">下</string>
+    <string name="tv_right">右</string>
+    <string name="tv_left">左</string>
+    <string name="tv_camera_h">摄像头水平方向</string>
+    <string name="tv_camera_v">摄像头垂直方向</string>
+    <string name="tv_stop">停止</string>
+    <string name="tv_horizon">H</string>
+    <string name="tv_vertical">V</string>
+    
 
 </resources>

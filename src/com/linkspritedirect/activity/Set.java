@@ -1,6 +1,9 @@
 package com.linkspritedirect.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -37,7 +40,7 @@ public class Set extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		setContentView(R.layout.set);
+		setContentView(R.layout.activity_set);
 		
 		et_controlAddr=(EditText)findViewById(R.id.et_controlAddr);
 		et_controlPort=(EditText)findViewById(R.id.et_controlPort);
@@ -71,27 +74,13 @@ public class Set extends Activity {
 			{
 			case R.id.bt_save:
 			{
-				controlAddr_temp=et_controlAddr.getText().toString();
-				controlPort_temp=et_controlPort.getText().toString();
-				videoAddr_temp=et_videoAddr.getText().toString();
-				videoPort_temp=et_videoPort.getText().toString();
+
+				dialog_save();
 				
-				System_data.controlAddr_store=controlAddr_temp;
-				System_data.controlPort_store=controlPort_temp;
-				System_data.videoAddr_store=videoAddr_temp;
-				System_data.videoPort_store=videoPort_temp;
-				
-				
-				et_controlAddr.setText(System_data.controlAddr_store);
-				et_controlPort.setText(System_data.controlPort_store);
-				et_videoAddr.setText(System_data.videoAddr_store);
-				et_videoPort.setText(System_data.videoPort_store);
-				
-				
-				Intent intent=new Intent();
+/*				Intent intent=new Intent();
 				intent.setClass(Set.this, Introduction.class);
 				startActivity(intent);
-				Set.this.finish();
+				Set.this.finish();*/
 				
 			}
 			break;
@@ -99,11 +88,8 @@ public class Set extends Activity {
 			case R.id.bt_cancel:
 			{
 				
-				et_controlAddr.setText(System_data.controlAddr_store);
-				et_controlPort.setText(System_data.controlPort_store);
-				et_videoAddr.setText(System_data.videoAddr_store);
-				et_videoPort.setText(System_data.videoPort_store);
-				
+
+				dialog_cancel();
 				/*
 				Intent intent=new Intent();
 				intent.setClass(Set.this, Introduction.class);
@@ -138,8 +124,119 @@ public class Set extends Activity {
 			back_intent.setClass(Set.this, Introduction.class);
 			startActivity(back_intent);
 			Set.this.finish();
+
 		}
 		return false;
+	}
+	
+	public void dialog_save()
+	{
+		AlertDialog.Builder builder=new Builder(Set.this);
+		builder.setMessage("确认保存？");
+		builder.setTitle("提示");
+		builder.setPositiveButton("确认",new DialogInterface.OnClickListener()
+		{
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				
+				controlAddr_temp=et_controlAddr.getText().toString();
+				controlPort_temp=et_controlPort.getText().toString();
+				videoAddr_temp=et_videoAddr.getText().toString();
+				videoPort_temp=et_videoPort.getText().toString();
+				
+				System_data.controlAddr_store=controlAddr_temp;
+				System_data.controlPort_store=controlPort_temp;
+				System_data.videoAddr_store=videoAddr_temp;
+				System_data.videoPort_store=videoPort_temp;
+				
+				
+				et_controlAddr.setText(System_data.controlAddr_store);
+				et_controlPort.setText(System_data.controlPort_store);
+				et_videoAddr.setText(System_data.videoAddr_store);
+				et_videoPort.setText(System_data.videoPort_store);
+				
+				
+			}
+			
+		});
+		
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+		{
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				
+				et_controlAddr.setText(System_data.controlAddr_store);
+				et_controlPort.setText(System_data.controlPort_store);
+				et_videoAddr.setText(System_data.videoAddr_store);
+				et_videoPort.setText(System_data.videoPort_store);
+			}
+
+			
+		});
+		
+		builder.create().show();
+		
+	}
+	
+	public void dialog_cancel()
+	{
+		AlertDialog.Builder builder=new Builder(Set.this);
+		builder.setMessage("确认取消？");
+		builder.setTitle("提示");
+		builder.setPositiveButton("确认",new DialogInterface.OnClickListener()
+		{
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				
+				et_controlAddr.setText(System_data.controlAddr_store);
+				et_controlPort.setText(System_data.controlPort_store);
+				et_videoAddr.setText(System_data.videoAddr_store);
+				et_videoPort.setText(System_data.videoPort_store);
+				
+				
+			}
+			
+		});
+		
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+		{
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+			
+				
+				controlAddr_temp=et_controlAddr.getText().toString();
+				controlPort_temp=et_controlPort.getText().toString();
+				videoAddr_temp=et_videoAddr.getText().toString();
+				videoPort_temp=et_videoPort.getText().toString();
+				
+				System_data.controlAddr_store=controlAddr_temp;
+				System_data.controlPort_store=controlPort_temp;
+				System_data.videoAddr_store=videoAddr_temp;
+				System_data.videoPort_store=videoPort_temp;
+				
+				
+				et_controlAddr.setText(System_data.controlAddr_store);
+				et_controlPort.setText(System_data.controlPort_store);
+				et_videoAddr.setText(System_data.videoAddr_store);
+				et_videoPort.setText(System_data.videoPort_store);
+			}
+
+			
+		});
+		
+		builder.create().show();
+		
 	}
 	
 }
