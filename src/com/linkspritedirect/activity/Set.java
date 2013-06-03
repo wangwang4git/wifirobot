@@ -24,7 +24,7 @@ public class Set extends Activity {
 	public EditText et_videoPort;
 	
 	public Button bt_save; 
-	public Button bt_cancel;
+	//public Button bt_cancel;
 	
 	public String controlAddr_temp;
 	public String videoAddr_temp;
@@ -60,7 +60,7 @@ public class Set extends Activity {
 		et_videoPort=(EditText)findViewById(R.id.et_videoPort);
 		
 		bt_save=(Button)findViewById(R.id.bt_save);
-		bt_cancel=(Button)findViewById(R.id.bt_cancel);
+		//bt_cancel=(Button)findViewById(R.id.bt_cancel);
 		
 		et_controlAddr.setText(System_data.controlAddr_store);
 		et_controlPort.setText(System_data.controlPort_store);
@@ -68,7 +68,7 @@ public class Set extends Activity {
 		et_videoPort.setText(System_data.videoPort_store);
 		
 		bt_save.setOnClickListener(new bt_clickEvent());
-		bt_cancel.setOnClickListener(new bt_clickEvent());
+		//bt_cancel.setOnClickListener(new bt_clickEvent());
 	 
 		
 		et_up = (EditText) findViewById(R.id.et_up);
@@ -116,11 +116,11 @@ public class Set extends Activity {
 			}
 			break;
 			
-			case R.id.bt_cancel:
-			{
+			//case R.id.bt_cancel:
+			//{
 				
 
-				dialog_cancel();
+				//dialog_cancel();
 				/*
 				Intent intent=new Intent();
 				intent.setClass(Set.this, Introduction.class);
@@ -128,8 +128,8 @@ public class Set extends Activity {
 				Set.this.finish();
 				*/
 				
-			}
-			break;
+			//}
+			//break;
 			
 			default:
 				break;
@@ -174,9 +174,9 @@ public class Set extends Activity {
 	public void dialog_save()
 	{
 		AlertDialog.Builder builder=new Builder(Set.this);
-		builder.setMessage("确认保存？");
-		builder.setTitle("提示");
-		builder.setPositiveButton("确认",new DialogInterface.OnClickListener()
+		builder.setMessage("Are you sure to save？");
+		builder.setTitle("Tips");
+		builder.setPositiveButton("sure",new DialogInterface.OnClickListener()
 		{
 
 			@Override
@@ -221,11 +221,16 @@ public class Set extends Activity {
 				et_camera_v.setText(System_data.camera_v_store);
 				cb_h_number.setChecked(System_data.camera_h_num_store);
 				cb_v_number.setChecked(System_data.camera_v_num_store);
+				
+				Intent intent=new Intent();
+				intent.setClass(Set.this, Introduction.class);
+				startActivity(intent);
+				Set.this.finish();
 			}
 			
 		});
 		
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+		builder.setNegativeButton("cancel", new DialogInterface.OnClickListener()
 		{
 
 			@Override
@@ -248,6 +253,11 @@ public class Set extends Activity {
 				et_camera_v.setText(System_data.camera_v_store);
 				cb_h_number.setChecked(System_data.camera_h_num_store);
 				cb_v_number.setChecked(System_data.camera_v_num_store);
+				
+				Intent intent=new Intent();
+				intent.setClass(Set.this, Introduction.class);
+				startActivity(intent);
+				Set.this.finish();
 			}
 
 			
@@ -260,9 +270,9 @@ public class Set extends Activity {
 	public void dialog_cancel()
 	{
 		AlertDialog.Builder builder=new Builder(Set.this);
-		builder.setMessage("确认取消？");
-		builder.setTitle("提示");
-		builder.setPositiveButton("确认",new DialogInterface.OnClickListener()
+		builder.setMessage("Are you sure to cancel？");
+		builder.setTitle("Tips");
+		builder.setPositiveButton("sure",new DialogInterface.OnClickListener()
 		{
 
 			@Override
@@ -289,7 +299,7 @@ public class Set extends Activity {
 			
 		});
 		
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+		builder.setNegativeButton("cancel", new DialogInterface.OnClickListener()
 		{
 
 			@Override
