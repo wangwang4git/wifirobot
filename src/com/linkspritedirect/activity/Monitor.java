@@ -47,6 +47,12 @@ public class Monitor extends Activity {
 
 	public SeekBar sb_vertical;
 	public SeekBar sb_horizon;
+	
+	//舵机控制按键
+	private Button bt_v_up;
+	private Button bt_v_down;
+	private Button bt_h_left;
+	private Button bt_h_right;
 
 	public MjpegView sv_camera = null;
 	// 缩放模式
@@ -63,6 +69,10 @@ public class Monitor extends Activity {
 	// 重力感应开启
 	private CheckBox mGravity = null;
 	private boolean isOpenSensor = false;
+	//按键控制座机开启
+	private CheckBox mCtrlModel = null;
+	private TextView tv_ctrl_model = null;
+	private boolean isButtonModel = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +104,12 @@ public class Monitor extends Activity {
 		sb_vertical.setProgress(50);
 		sb_horizon = (SeekBar) findViewById(R.id.sb_horizon);
 		sb_horizon.setProgress(50);
+		
+		//舵机控制
+		bt_v_up = (Button)findViewById(R.id.bt_v_up);
+		bt_v_down = (Button)findViewById(R.id.bt_v_down);
+		bt_h_left = (Button)findViewById(R.id.bt_h_left);
+		bt_h_right = (Button)findViewById(R.id.bt_h_right);
 
 		bt_advance.setOnTouchListener(new ClickEvent());
 		bt_retreat.setOnTouchListener(new ClickEvent());
@@ -108,22 +124,28 @@ public class Monitor extends Activity {
 		sv_camera.setOnTouchListener(new cameraOnTouchListener());
 		String cameraURL = "http://" + System_data.videoAddr_store.trim() + ":"
 				+ System_data.videoPort_store.trim() + "/?action=stream";
-		sv_camera.setSource(MjpegInputStream.read(cameraURL));
-		// 缩放模式
-		videoDisplayMode = MjpegView.SIZE_FULLSCREEN; // MjpegView.SIZE_BEST_FIT
-		sv_camera.setDisplayMode(videoDisplayMode);
-		sv_camera.showFps(true);
+		MjpegInputStream mjpegInputStream = MjpegInputStream.read(cameraURL);
+		if (null == mjpegInputStream) {
+			Toast.makeText(this, "Video access failure", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "Video access success", Toast.LENGTH_SHORT).show();
+			sv_camera.setSource(MjpegInputStream.read(cameraURL));
+			// 缩放模式
+			videoDisplayMode = MjpegView.SIZE_FULLSCREEN; // MjpegView.SIZE_BEST_FIT
+			sv_camera.setDisplayMode(videoDisplayMode);
+			sv_camera.showFps(true);
+		}
 
 		mHandler = new Handler() {
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case 0: {
-					Toast.makeText(getApplicationContext(), "Socket连接成功",
+					Toast.makeText(getApplicationContext(), "Socket link success",
 							Toast.LENGTH_SHORT).show();
 					break;
 				}
 				case -1: {
-					Toast.makeText(getApplicationContext(), "Socket连接失败",
+					Toast.makeText(getApplicationContext(), "Socket link failure",
 							Toast.LENGTH_SHORT).show();
 					break;
 				}
@@ -164,7 +186,17 @@ public class Monitor extends Activity {
 					((TextView) findViewById(R.id.tv_horizon))
 							.setVisibility(View.INVISIBLE);
 					sb_vertical.setVisibility(View.INVISIBLE);
-					sb_horizon.setVisibility(View.INVISIBLE);
+					sb_horizon.setVisibility(View.INVISIBLE);	
+					
+					bt_v_up.setVisibility(View.INVISIBLE);
+					bt_v_down.setVisibility(View.INVISIBLE);
+					bt_h_left.setVisibility(View.INVISIBLE);
+					bt_h_right.setVisibility(View.INVISIBLE);
+					
+					tv_ctrl_model.setVisibility(View.INVISIBLE);
+					mCtrlModel.setVisibility(View.INVISIBLE);
+
+					
 				} else {
 					isOpenSensor = false;
 
@@ -172,14 +204,91 @@ public class Monitor extends Activity {
 					bt_retreat.setVisibility(View.VISIBLE);
 					bt_right.setVisibility(View.VISIBLE);
 					bt_left.setVisibility(View.VISIBLE);
+					
+					tv_ctrl_model.setVisibility(View.VISIBLE);
+					mCtrlModel.setVisibility(View.VISIBLE);
+					mCtrlModel.setChecked(isButtonModel);
+					if(isButtonModel)
+					{
+						bt_v_up.setVisibility(View.VISIBLE);
+						bt_v_down.setVisibility(View.VISIBLE);
+						bt_h_left.setVisibility(View.VISIBLE);
+						bt_h_right.setVisibility(View.VISIBLE);
+						
+						((TextView) findViewById(R.id.tv_vertical))
+						.setVisibility(View.INVISIBLE);
+				        ((TextView) findViewById(R.id.tv_horizon))
+						.setVisibility(View.INVISIBLE);
+			          	sb_vertical.setVisibility(View.INVISIBLE);
+			           	sb_horizon.setVisibility(View.INVISIBLE);
+					}
+					else
+					{
+						bt_v_up.setVisibility(View.INVISIBLE);
+						bt_v_down.setVisibility(View.INVISIBLE);
+						bt_h_left.setVisibility(View.INVISIBLE);
+						bt_h_right.setVisibility(View.INVISIBLE);
+						
+						((TextView) findViewById(R.id.tv_vertical))
+						.setVisibility(View.VISIBLE);
+				        ((TextView) findViewById(R.id.tv_horizon))
+						.setVisibility(View.VISIBLE);
+			          	sb_vertical.setVisibility(View.VISIBLE);
+			           	sb_horizon.setVisibility(View.VISIBLE);
+					}
+					
+					
 
-					((TextView) findViewById(R.id.tv_vertical))
-							.setVisibility(View.VISIBLE);
-					((TextView) findViewById(R.id.tv_horizon))
-							.setVisibility(View.VISIBLE);
-					sb_vertical.setVisibility(View.VISIBLE);
-					sb_horizon.setVisibility(View.VISIBLE);
 				}
+			}
+		});
+		
+		//设置舵机的控制模式（按键或者进度条）
+		mCtrlModel = (CheckBox)findViewById(R.id.cb_ctrl_model);
+		tv_ctrl_model = (TextView)findViewById(R.id.tv_ctrl_model);
+		sb_vertical.setVisibility(View.GONE);
+		sb_horizon.setVisibility(View.GONE);
+		((TextView)findViewById(R.id.tv_vertical)).setVisibility(View.INVISIBLE);
+		((TextView)findViewById(R.id.tv_horizon)).setVisibility(View.INVISIBLE);
+		mCtrlModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO Auto-generated method stub
+				if(isChecked)
+				{
+					((TextView) findViewById(R.id.tv_vertical))
+					.setVisibility(View.GONE);
+			        ((TextView) findViewById(R.id.tv_horizon))
+					.setVisibility(View.GONE);
+		           	sb_vertical.setVisibility(View.GONE);
+			        sb_horizon.setVisibility(View.GONE);
+			        
+
+					bt_v_up.setVisibility(View.VISIBLE);
+					bt_v_down.setVisibility(View.VISIBLE);
+					bt_h_left.setVisibility(View.VISIBLE);
+					bt_h_right.setVisibility(View.VISIBLE);
+			        
+			        isButtonModel = true;
+				}
+				else
+				{
+					((TextView) findViewById(R.id.tv_vertical))
+					.setVisibility(View.VISIBLE);
+			        ((TextView) findViewById(R.id.tv_horizon))
+					.setVisibility(View.VISIBLE);
+		        	sb_vertical.setVisibility(View.VISIBLE);
+			        sb_horizon.setVisibility(View.VISIBLE);
+			        
+					bt_v_up.setVisibility(View.GONE);
+					bt_v_down.setVisibility(View.GONE);
+					bt_h_left.setVisibility(View.GONE);
+					bt_h_right.setVisibility(View.GONE);
+			        
+			        isButtonModel = false;
+				}
+				
 			}
 		});
 		isOpenSensor = false;

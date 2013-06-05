@@ -15,7 +15,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#90505070">
             
             <LinearLayout 
                 android:layout_width="match_parent"
@@ -30,14 +31,15 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="@string/tv_videoAddr"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
                 
                 <EditText
                     android:id="@+id/et_videoAddr"
-                    android:layout_width="170dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/tv_videoAddr"
                     android:layout_alignParentTop="true"
+                    android:layout_marginLeft="17dp"
                     android:inputType="textUri"/>
                     
 
@@ -56,13 +58,14 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="@string/tv_videoPort"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
                 
                 <EditText
                     android:id="@+id/et_videoPort"
-                    android:layout_width="170dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/tv_videoPort"
+                    android:layout_marginLeft="47dp"
                     android:layout_alignParentTop="true"
                     android:inputType="number"/>
                 
@@ -81,14 +84,15 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="@string/tv_controlAddr"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
                 
                 <EditText
                     android:id="@+id/et_controlAddr"
-                    android:layout_width="170dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/tv_controlAddr"
                     android:layout_alignParentTop="true"
+                    android:layout_marginLeft="0dp"
                     android:inputType="text"/>
                 
             </LinearLayout>
@@ -106,14 +110,15 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="@string/tv_controlPort"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
                 
                 <EditText
                     android:id="@+id/et_controlPort"
-                    android:layout_width="170dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/tv_controlPort"
                     android:layout_alignParentTop="true"
+                    android:layout_marginLeft="29dp"
                     android:inputType="number"/>
                 
             </LinearLayout>
@@ -124,21 +129,7 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
                 
-                <TextView
-                    android:id="@+id/tv_stop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/tv_stop"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
-                <EditText 
-                    android:id="@+id/et_stop"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tv_stop"
-                    android:layout_alignParentTop="true"
-                    android:inputType="text"/> 
+
                 
             </LinearLayout>
         </LinearLayout>
@@ -147,24 +138,10 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#80A09070">
             
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-                
-                <TextView 
-                    android:id="@+id/tv_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="机器人控制设置"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
-                "
-            </LinearLayout>
+
             
             <LinearLayout
                 android:layout_weight="1"
@@ -180,7 +157,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="30dp"
                     android:text="@string/tv_up"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <EditText
                     android:id="@+id/et_up"
@@ -188,25 +165,29 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/tv_up"
+                    android:layout_marginLeft="3dp"
                     android:inputType="text"/>
                 
-               <TextView 
-                    android:id="@+id/tv_down"
+             
+                <TextView 
+                    android:id="@+id/tv_left"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_toRightOf="@+id/et_up"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/tv_down"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                    android:text="@string/tv_left"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <EditText
-                    android:id="@+id/et_down"
+                    android:id="@+id/et_left"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/tv_down"
-                    android:inputType="text"/>"
+                    android:layout_toRightOf="@+id/tv_left"
+                    android:inputType="text"/>
+                
+
                 
             </LinearLayout>
             
@@ -217,32 +198,34 @@
                 android:orientation="horizontal">
                 
                 <TextView 
-                    android:id="@+id/tv_left"
+                    android:id="@+id/tv_down"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/tv_left"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                    android:text="@string/tv_down"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <EditText
-                    android:id="@+id/et_left"
+                    android:id="@+id/et_down"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/tv_left"
-                    android:inputType="text"/>
+                    android:layout_toRightOf="@+id/tv_down"
+                    android:inputType="text"/>"
+                
+
                 
                <TextView 
                     android:id="@+id/tv_right"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/et_left"
+                    android:layout_toRightOf="@+id/et_down"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="22dp"
                     android:text="@string/tv_right"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <EditText
                     android:id="@+id/et_right"
@@ -260,14 +243,40 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
                 
+                <TextView
+                    android:id="@+id/tv_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/tv_stop"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <EditText 
+                    android:id="@+id/et_stop"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_stop"
+                    android:layout_alignParentTop="true"
+                    android:inputType="text"/> 
+
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                
                 <TextView 
                     android:id="@+id/tv_camera_h"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="30dp"
                     android:text="@string/tv_camera_h"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <EditText 
                     android:id="@+id/et_camera_h"
@@ -283,8 +292,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/et_camera_h"
-                    android:text="数据传送"
-                    android:layout_marginLeft="25dp"/>
+                    android:text="DT"
+                    android:layout_marginLeft="35dp"/>
                 
                 <CheckBox 
                     android:id="@+id/cb_h_number"
@@ -307,8 +316,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="30dp"
                     android:text="@string/tv_camera_v"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <EditText 
                     android:id="@+id/et_camera_v"
@@ -316,6 +326,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/tv_camera_v"
+                    android:layout_marginLeft="4dp"
                     android:inputType="text"/>
                 
                 <TextView
@@ -324,8 +335,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/et_camera_v"
-                    android:text="数据传送"
-                    android:layout_marginLeft="25dp"/>
+                    android:text="DT"
+                    android:layout_marginLeft="35dp"/>
                 
                 <CheckBox 
                     android:id="@+id/cb_v_number"
@@ -350,23 +361,18 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal">
         
          <Button 
             android:id="@+id/bt_save"
-            android:layout_width="match_parent"
+            android:layout_width="180dp"
             android:layout_height="50dp"
             android:text="@string/bt_save"
-            android:layout_weight="1"
-            android:layout_marginRight="25dp"/>
+            android:layout_gravity="center"
+            />
         
-        <Button
-            android:id="@+id/bt_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="25dp"
-            android:text="@string/bt_cancel"/>
+
         
     </LinearLayout>
 
