@@ -36,9 +36,11 @@ public class Monitor extends Activity {
 	private String LEFT = null;
 	private String RIGHT = null;
 	private String STOP = null;
-	
-	private String HORIZON = null;
-	private String VERTICAL = null;
+
+	private String HORIZON_LEFT = null;
+	private String HORIZON_RIGHT = null;
+	private String VERTICAL_UP = null;
+	private String VERTICAL_DOWN = null;
 
 	public Button bt_advance;
 	public Button bt_retreat;
@@ -47,12 +49,13 @@ public class Monitor extends Activity {
 
 	public SeekBar sb_vertical;
 	public SeekBar sb_horizon;
-	
-	//舵机控制按键
+
+	// 舵机控制按键
 	private Button bt_v_up;
 	private Button bt_v_down;
 	private Button bt_h_left;
 	private Button bt_h_right;
+	
 
 	public MjpegView sv_camera = null;
 	// 缩放模式
@@ -60,8 +63,9 @@ public class Monitor extends Activity {
 
 	private WifiRobotControlClient mClient = null;
 	private Thread mControlThread = null;
+	private Thread mCameraThread = null; 
 	private Handler mHandler = null;
-	
+
 	// 系统Sensor管理器
 	private SensorManager sensorManager = null;
 	// 系统Sensor监听器
@@ -69,10 +73,13 @@ public class Monitor extends Activity {
 	// 重力感应开启
 	private CheckBox mGravity = null;
 	private boolean isOpenSensor = false;
-	//按键控制座机开启
+	// 按键控制座机开启
 	private CheckBox mCtrlModel = null;
 	private TextView tv_ctrl_model = null;
 	private boolean isButtonModel = true;
+	
+	private boolean isSocketInitEnd = false;
+	private boolean isEndCameraInitEnd = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +90,27 @@ public class Monitor extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		this.getWindow().setFlags(
+				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 		setContentView(R.layout.activity_monitor);
 
+		isSocketInitEnd = false;
+		isEndCameraInitEnd = false;
+		isOpenSensor = false;
+		
 		ADVANCE = System_data.up_store;
 		RETREAT = System_data.down_store;
 		LEFT = System_data.left_store;
 		RIGHT = System_data.right_store;
 		STOP = System_data.stop_store;
-		
-		HORIZON = System_data.camera_h_store;
-		VERTICAL = System_data.camera_v_store;
-		
+
+		HORIZON_LEFT = System_data.camera_h_left;
+		HORIZON_RIGHT = System_data.camera_h_right;
+		VERTICAL_UP = System_data.camera_v_up;
+		VERTICAL_DOWN = System_data.camera_v_down;
+
 		bt_advance = (Button) findViewById(R.id.bt_advance);
 		bt_retreat = (Button) findViewById(R.id.bt_retreat);
 		bt_right = (Button) findViewById(R.id.bt_right);
@@ -104,12 +120,17 @@ public class Monitor extends Activity {
 		sb_vertical.setProgress(50);
 		sb_horizon = (SeekBar) findViewById(R.id.sb_horizon);
 		sb_horizon.setProgress(50);
+
+		// 舵机控制
+		bt_v_up = (Button) findViewById(R.id.bt_v_up);
+		bt_v_down = (Button) findViewById(R.id.bt_v_down);
+		bt_h_left = (Button) findViewById(R.id.bt_h_left);
+		bt_h_right = (Button) findViewById(R.id.bt_h_right);
 		
-		//舵机控制
-		bt_v_up = (Button)findViewById(R.id.bt_v_up);
-		bt_v_down = (Button)findViewById(R.id.bt_v_down);
-		bt_h_left = (Button)findViewById(R.id.bt_h_left);
-		bt_h_right = (Button)findViewById(R.id.bt_h_right);
+		bt_v_up.setOnTouchListener(new ClickEvent());
+		bt_v_down.setOnTouchListener(new ClickEvent());
+		bt_h_left.setOnTouchListener(new ClickEvent());
+		bt_h_right.setOnTouchListener(new ClickEvent());
 
 		bt_advance.setOnTouchListener(new ClickEvent());
 		bt_retreat.setOnTouchListener(new ClickEvent());
@@ -122,31 +143,59 @@ public class Monitor extends Activity {
 		sv_camera = (MjpegView) findViewById(R.id.sv);
 		// 设置自定义双击事件监听器
 		sv_camera.setOnTouchListener(new cameraOnTouchListener());
-		String cameraURL = "http://" + System_data.videoAddr_store.trim() + ":"
-				+ System_data.videoPort_store.trim() + "/?action=stream";
-		MjpegInputStream mjpegInputStream = MjpegInputStream.read(cameraURL);
-		if (null == mjpegInputStream) {
-			Toast.makeText(this, "Video access failure", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, "Video access success", Toast.LENGTH_SHORT).show();
-			sv_camera.setSource(MjpegInputStream.read(cameraURL));
-			// 缩放模式
-			videoDisplayMode = MjpegView.SIZE_FULLSCREEN; // MjpegView.SIZE_BEST_FIT
-			sv_camera.setDisplayMode(videoDisplayMode);
-			sv_camera.showFps(true);
-		}
+		
+		mCameraThread = new Thread(new Runnable() {
+			public void run() {
+				String cameraURL = "http://"
+						+ System_data.videoAddr_store.trim() + ":"
+						+ System_data.videoPort_store.trim()
+						+ "/?action=stream";
+				MjpegInputStream mjpegInputStream = MjpegInputStream
+						.read(cameraURL);
+				if (null == mjpegInputStream) {
+					Message msg = new Message();
+					msg.what = 4;
+					mHandler.sendMessage(msg);
+				} else {
+					Message msg = new Message();
+					msg.what = 3;
+					mHandler.sendMessage(msg);
+
+					sv_camera.setSource(MjpegInputStream.read(cameraURL));
+					// 缩放模式
+					videoDisplayMode = MjpegView.SIZE_FULLSCREEN; // MjpegView.SIZE_BEST_FIT
+					sv_camera.setDisplayMode(videoDisplayMode);
+					sv_camera.showFps(true);
+				}
+			}
+		});
+		mCameraThread.start();
 
 		mHandler = new Handler() {
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
-				case 0: {
-					Toast.makeText(getApplicationContext(), "Socket link success",
-							Toast.LENGTH_SHORT).show();
+				case 1: {
+					isSocketInitEnd = true;
+					Toast.makeText(getApplicationContext(),
+							"Socket link success", Toast.LENGTH_SHORT).show();
 					break;
 				}
-				case -1: {
-					Toast.makeText(getApplicationContext(), "Socket link failure",
-							Toast.LENGTH_SHORT).show();
+				case 2: {
+					isSocketInitEnd = true;
+					Toast.makeText(getApplicationContext(),
+							"Socket link failure", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				case 3: {
+					isEndCameraInitEnd = true;
+					Toast.makeText(getApplicationContext(),
+							"Video access success", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				case 4: {
+					isEndCameraInitEnd = true;
+					Toast.makeText(getApplicationContext(),
+							"Video access failure", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				default: {
@@ -186,17 +235,16 @@ public class Monitor extends Activity {
 					((TextView) findViewById(R.id.tv_horizon))
 							.setVisibility(View.INVISIBLE);
 					sb_vertical.setVisibility(View.INVISIBLE);
-					sb_horizon.setVisibility(View.INVISIBLE);	
-					
+					sb_horizon.setVisibility(View.INVISIBLE);
+
 					bt_v_up.setVisibility(View.INVISIBLE);
 					bt_v_down.setVisibility(View.INVISIBLE);
 					bt_h_left.setVisibility(View.INVISIBLE);
 					bt_h_right.setVisibility(View.INVISIBLE);
-					
+
 					tv_ctrl_model.setVisibility(View.INVISIBLE);
 					mCtrlModel.setVisibility(View.INVISIBLE);
 
-					
 				} else {
 					isOpenSensor = false;
 
@@ -204,94 +252,115 @@ public class Monitor extends Activity {
 					bt_retreat.setVisibility(View.VISIBLE);
 					bt_right.setVisibility(View.VISIBLE);
 					bt_left.setVisibility(View.VISIBLE);
-					
+
 					tv_ctrl_model.setVisibility(View.VISIBLE);
 					mCtrlModel.setVisibility(View.VISIBLE);
 					mCtrlModel.setChecked(isButtonModel);
-					if(isButtonModel)
-					{
+					if (isButtonModel) {
 						bt_v_up.setVisibility(View.VISIBLE);
 						bt_v_down.setVisibility(View.VISIBLE);
 						bt_h_left.setVisibility(View.VISIBLE);
 						bt_h_right.setVisibility(View.VISIBLE);
-						
+
 						((TextView) findViewById(R.id.tv_vertical))
-						.setVisibility(View.INVISIBLE);
-				        ((TextView) findViewById(R.id.tv_horizon))
-						.setVisibility(View.INVISIBLE);
-			          	sb_vertical.setVisibility(View.INVISIBLE);
-			           	sb_horizon.setVisibility(View.INVISIBLE);
-					}
-					else
-					{
+								.setVisibility(View.INVISIBLE);
+						((TextView) findViewById(R.id.tv_horizon))
+								.setVisibility(View.INVISIBLE);
+						sb_vertical.setVisibility(View.INVISIBLE);
+						sb_horizon.setVisibility(View.INVISIBLE);
+					} else {
 						bt_v_up.setVisibility(View.INVISIBLE);
 						bt_v_down.setVisibility(View.INVISIBLE);
 						bt_h_left.setVisibility(View.INVISIBLE);
 						bt_h_right.setVisibility(View.INVISIBLE);
-						
+
 						((TextView) findViewById(R.id.tv_vertical))
-						.setVisibility(View.VISIBLE);
-				        ((TextView) findViewById(R.id.tv_horizon))
-						.setVisibility(View.VISIBLE);
-			          	sb_vertical.setVisibility(View.VISIBLE);
-			           	sb_horizon.setVisibility(View.VISIBLE);
+								.setVisibility(View.VISIBLE);
+						((TextView) findViewById(R.id.tv_horizon))
+								.setVisibility(View.VISIBLE);
+						sb_vertical.setVisibility(View.VISIBLE);
+						sb_horizon.setVisibility(View.VISIBLE);
 					}
-					
-					
 
 				}
 			}
 		});
-		
-		//设置舵机的控制模式（按键或者进度条）
-		mCtrlModel = (CheckBox)findViewById(R.id.cb_ctrl_model);
-		tv_ctrl_model = (TextView)findViewById(R.id.tv_ctrl_model);
+
+		// 设置舵机的控制模式（按键或者进度条）
+		mCtrlModel = (CheckBox) findViewById(R.id.cb_ctrl_model);
+		tv_ctrl_model = (TextView) findViewById(R.id.tv_ctrl_model);
 		sb_vertical.setVisibility(View.GONE);
 		sb_horizon.setVisibility(View.GONE);
-		((TextView)findViewById(R.id.tv_vertical)).setVisibility(View.INVISIBLE);
-		((TextView)findViewById(R.id.tv_horizon)).setVisibility(View.INVISIBLE);
-		mCtrlModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				// TODO Auto-generated method stub
-				if(isChecked)
-				{
-					((TextView) findViewById(R.id.tv_vertical))
-					.setVisibility(View.GONE);
-			        ((TextView) findViewById(R.id.tv_horizon))
-					.setVisibility(View.GONE);
-		           	sb_vertical.setVisibility(View.GONE);
-			        sb_horizon.setVisibility(View.GONE);
-			        
+		((TextView) findViewById(R.id.tv_vertical))
+				.setVisibility(View.INVISIBLE);
+		((TextView) findViewById(R.id.tv_horizon))
+				.setVisibility(View.INVISIBLE);
+		mCtrlModel
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-					bt_v_up.setVisibility(View.VISIBLE);
-					bt_v_down.setVisibility(View.VISIBLE);
-					bt_h_left.setVisibility(View.VISIBLE);
-					bt_h_right.setVisibility(View.VISIBLE);
-			        
-			        isButtonModel = true;
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						// TODO Auto-generated method stub
+						if (isChecked) {
+							((TextView) findViewById(R.id.tv_vertical))
+									.setVisibility(View.GONE);
+							((TextView) findViewById(R.id.tv_horizon))
+									.setVisibility(View.GONE);
+							sb_vertical.setVisibility(View.GONE);
+							sb_horizon.setVisibility(View.GONE);
+
+							bt_v_up.setVisibility(View.VISIBLE);
+							bt_v_down.setVisibility(View.VISIBLE);
+							bt_h_left.setVisibility(View.VISIBLE);
+							bt_h_right.setVisibility(View.VISIBLE);
+
+							isButtonModel = true;
+						} else {
+							((TextView) findViewById(R.id.tv_vertical))
+									.setVisibility(View.VISIBLE);
+							((TextView) findViewById(R.id.tv_horizon))
+									.setVisibility(View.VISIBLE);
+							sb_vertical.setVisibility(View.VISIBLE);
+							sb_horizon.setVisibility(View.VISIBLE);
+
+							bt_v_up.setVisibility(View.GONE);
+							bt_v_down.setVisibility(View.GONE);
+							bt_h_left.setVisibility(View.GONE);
+							bt_h_right.setVisibility(View.GONE);
+
+							isButtonModel = false;
+						}
+
+					}
+				});
+		isOpenSensor = false;
+		
+		Thread background = new Thread(new Runnable() {
+			public void run() {
+				try {
+					Thread.sleep(3000);
+					if (!isSocketInitEnd) {
+						mControlThread.interrupt();
+
+						Message msg = new Message();
+						msg.what = 2;
+						mHandler.sendMessage(msg);
+					}
+					if (!isEndCameraInitEnd) {
+						mCameraThread.interrupt();
+
+						Message msg = new Message();
+						msg.what = 4;
+						mHandler.sendMessage(msg);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				else
-				{
-					((TextView) findViewById(R.id.tv_vertical))
-					.setVisibility(View.VISIBLE);
-			        ((TextView) findViewById(R.id.tv_horizon))
-					.setVisibility(View.VISIBLE);
-		        	sb_vertical.setVisibility(View.VISIBLE);
-			        sb_horizon.setVisibility(View.VISIBLE);
-			        
-					bt_v_up.setVisibility(View.GONE);
-					bt_v_down.setVisibility(View.GONE);
-					bt_h_left.setVisibility(View.GONE);
-					bt_h_right.setVisibility(View.GONE);
-			        
-			        isButtonModel = false;
-				}
-				
 			}
 		});
-		isOpenSensor = false;
+		background.start();
 	}
 
 	@Override
@@ -316,7 +385,7 @@ public class Monitor extends Activity {
 		super.onDestroy();
 
 		mClient.destroy();
-		
+
 		sv_camera.stopPlayback();
 	}
 
@@ -392,6 +461,81 @@ public class Monitor extends Activity {
 				}
 				break;
 			}
+			case R.id.bt_v_up: {
+				int action = event.getAction();
+				switch (action) {
+				case MotionEvent.ACTION_DOWN: {
+					mClient.send(VERTICAL_UP);
+					System.out.println(VERTICAL_UP);
+					break;
+				}
+				case MotionEvent.ACTION_UP: {
+					mClient.send(STOP);
+					break;
+				}
+				default: {
+					break;
+				}
+				}
+				break;
+			}
+			case R.id.bt_v_down: {
+				int action = event.getAction();
+				switch (action) {
+				case MotionEvent.ACTION_DOWN: {
+					mClient.send(VERTICAL_DOWN);
+					System.out.println(VERTICAL_DOWN);
+					break;
+				}
+				case MotionEvent.ACTION_UP: {
+					mClient.send(STOP);
+					break;
+				}
+				default: {
+					break;
+				}
+				}
+				break;
+			}
+			case R.id.bt_h_left: {
+				int action = event.getAction();
+				switch (action) {
+				case MotionEvent.ACTION_DOWN: {
+					mClient.send(HORIZON_LEFT);
+					System.out.println(HORIZON_LEFT);
+					break;
+				}
+				case MotionEvent.ACTION_UP: {
+					mClient.send(STOP);
+					break;
+				}
+				default: {
+					break;
+				}
+				}
+				break;
+			}
+			case R.id.bt_h_right: {
+				int action = event.getAction();
+				switch (action) {
+				case MotionEvent.ACTION_DOWN: {
+					mClient.send(HORIZON_RIGHT);
+					System.out.println(HORIZON_RIGHT);
+					break;
+				}
+				case MotionEvent.ACTION_UP: {
+					mClient.send(STOP);
+					break;
+				}
+				default: {
+					break;
+				}
+				}
+				break;
+			}
+			default: {
+				break;
+			}
 			}
 			return false;
 		}
@@ -411,11 +555,11 @@ public class Monitor extends Activity {
 
 			switch (seekBar.getId()) {
 			case R.id.sb_vertical: {
-				mClient.send(VERTICAL);
+				// mClient.send(VERTICAL);
 				break;
 			}
 			case R.id.sb_horizon: {
-				mClient.send(HORIZON);
+				// mClient.send(HORIZON);
 				break;
 			}
 			default: {
@@ -430,11 +574,11 @@ public class Monitor extends Activity {
 
 			switch (seekBar.getId()) {
 			case R.id.sb_vertical: {
-				mClient.send(VERTICAL);
+				// mClient.send(VERTICAL);
 				break;
 			}
 			case R.id.sb_horizon: {
-				mClient.send(HORIZON);
+				// mClient.send(HORIZON);
 				break;
 			}
 			default: {
@@ -453,7 +597,7 @@ public class Monitor extends Activity {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 功能： 自定义双击事件监听器
 	 */
@@ -506,7 +650,7 @@ public class Monitor extends Activity {
 			lastClick = 0;
 		}
 	}
-	
+
 	/*
 	 * 功能： 自定义重力感应监听器
 	 */
@@ -519,11 +663,29 @@ public class Monitor extends Activity {
 		@Override
 		public void onSensorChanged(SensorEvent event) {
 			// TODO Auto-generated method stub
-			// float[] values = event.values;
-			// values[0] X方向上的加速度
-			// values[1] Y方向上的加速度
-			// values[2] Z方向上的加速度
+			if (isOpenSensor) {
+				float[] values = event.values;
+				// values[0] X方向上的加速度
+				// values[1] Y方向上的加速度
+				// values[2] Z方向上的加速度
+
+				// values[1] < -5，向左；values[1] > 5，向右
+				// values[0] > 5，向后；values[0] < -5，向前
+				if (values[0] < -5) {
+					mClient.send(ADVANCE);
+					System.out.println(ADVANCE);
+				} else if (values[0] > 5) {
+					mClient.send(RETREAT);
+					System.out.println(RETREAT);
+				}
+				if (values[1] > 5) {
+					mClient.send(RIGHT);
+					System.out.println(RIGHT);
+				} else if (values[1] < -5) {
+					mClient.send(LEFT);
+					System.out.println(LEFT);
+				}
+			}
 		}
 	}
-	
 }

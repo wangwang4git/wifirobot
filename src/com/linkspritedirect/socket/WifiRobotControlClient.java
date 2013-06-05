@@ -78,12 +78,11 @@ public class WifiRobotControlClient implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		initSocket();
-
 		Message msg = new Message();
 		if (!isAvailable()) {
-			msg.what = -1;
+			msg.what = 2;
 		} else {
-			msg.what = 0;
+			msg.what = 1;
 		}
 		mHandler.sendMessage(msg);
 	}

@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,37 +14,37 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.linkspritedirect.R;
 
 public class Set extends Activity {
+	//视频传输控制地址和端口
 	public EditText et_controlAddr;
 	public EditText et_controlPort;
 	public EditText et_videoAddr;
 	public EditText et_videoPort;
 	
-	public Button bt_save; 
-	//public Button bt_cancel;
-	
-	public String controlAddr_temp;
-	public String videoAddr_temp;
-	public String controlPort_temp;
-	public String videoPort_temp;
-	
+	//运动方位控制设置编辑器
 	private EditText et_up = null;
 	private EditText et_down = null;
 	private EditText et_left = null;
 	private EditText et_right = null;
 	private EditText et_stop = null;
 	
-	private EditText et_camera_h = null;
-	private EditText et_camera_v = null;
-	private CheckBox cb_h_number = null;
-	private CheckBox cb_v_number = null;
+	//舵机转动方位控制编辑器
+	private EditText et_h_left = null;
+	private EditText et_h_right = null;
+	private EditText et_v_up = null;
+	private EditText et_v_down = null;
 	
-
+	//保存按钮
+	public Button bt_save; 
+	
+	//上次输入数据的保存
+	private SharedPreferences sharedPreferenecs;
+	private Editor editor;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -59,26 +61,31 @@ public class Set extends Activity {
 		et_videoAddr=(EditText)findViewById(R.id.et_videoAddr);
 		et_videoPort=(EditText)findViewById(R.id.et_videoPort);
 		
-		bt_save=(Button)findViewById(R.id.bt_save);
-		//bt_cancel=(Button)findViewById(R.id.bt_cancel);
-		
-		et_controlAddr.setText(System_data.controlAddr_store);
-		et_controlPort.setText(System_data.controlPort_store);
-		et_videoAddr.setText(System_data.videoAddr_store);
-		et_videoPort.setText(System_data.videoPort_store);
-		
-		bt_save.setOnClickListener(new bt_clickEvent());
-		//bt_cancel.setOnClickListener(new bt_clickEvent());
-	 
-		
 		et_up = (EditText) findViewById(R.id.et_up);
 		et_down = (EditText) findViewById(R.id.et_down);
 		et_left = (EditText) findViewById(R.id.et_left);
 		et_right = (EditText) findViewById(R.id.et_right);
 		et_stop = (EditText) findViewById(R.id.et_stop);
 		
-		et_camera_h = (EditText) findViewById(R.id.et_camera_h);
-		et_camera_v = (EditText) findViewById(R.id.et_camera_v);
+		et_h_left = (EditText) findViewById(R.id.et_h_left);
+		et_h_right = (EditText) findViewById(R.id.et_h_right);
+		et_v_up = (EditText) findViewById(R.id.et_v_up);
+		et_v_down = (EditText) findViewById(R.id.et_v_down);
+		
+		bt_save=(Button)findViewById(R.id.bt_save);
+		
+		//用户数据保存功能的初始化
+		sharedPreferenecs = this.getSharedPreferences("user", MODE_WORLD_READABLE);
+		editor = sharedPreferenecs.edit();
+		
+		//读取用户上次输入的信息
+		userMsgReader();
+		
+		//初始化话设置界面的各项数据
+		et_controlAddr.setText(System_data.controlAddr_store);
+		et_controlPort.setText(System_data.controlPort_store);
+		et_videoAddr.setText(System_data.videoAddr_store);
+		et_videoPort.setText(System_data.videoPort_store);
 		
 		et_up.setText(System_data.up_store);
 		et_down.setText(System_data.down_store);
@@ -86,14 +93,16 @@ public class Set extends Activity {
 		et_right.setText(System_data.right_store);
 		et_stop.setText(System_data.stop_store);
 		
-		et_camera_h.setText(System_data.camera_h_store);
-		et_camera_v.setText(System_data.camera_v_store);
-		cb_h_number = (CheckBox) findViewById(R.id.cb_h_number);
-		cb_v_number = (CheckBox) findViewById(R.id.cb_v_number);
-	}
-	
-	
+		et_h_left.setText(System_data.camera_h_left);
+		et_h_right.setText(System_data.camera_h_right);
+		et_v_up.setText(System_data.camera_v_up);
+		et_v_down.setText(System_data.camera_v_down);
+		
+		//保存按钮的功能实现
+		bt_save.setOnClickListener(new bt_clickEvent());
 
+
+	}
 	
 	class bt_clickEvent implements OnClickListener
 	{
@@ -107,30 +116,8 @@ public class Set extends Activity {
 			{
 
 				dialog_save();
-				
-/*				Intent intent=new Intent();
-				intent.setClass(Set.this, Introduction.class);
-				startActivity(intent);
-				Set.this.finish();*/
-				
+				break;
 			}
-			break;
-			
-			//case R.id.bt_cancel:
-			//{
-				
-
-				//dialog_cancel();
-				/*
-				Intent intent=new Intent();
-				intent.setClass(Set.this, Introduction.class);
-				startActivity(intent);
-				Set.this.finish();
-				*/
-				
-			//}
-			//break;
-			
 			default:
 				break;
 			}
@@ -151,10 +138,12 @@ public class Set extends Activity {
 		public static String right_store = "d";
 		public static String stop_store = "0";
 
-		public static String camera_h_store = "h";
-		public static boolean camera_h_num_store = false;
-		public static String camera_v_store = "v";
-		public static boolean camera_v_num_store = false;
+		public static String camera_h_left = "h";
+		public static String camera_h_right = "r";
+
+		public static String camera_v_up = "v";
+		public static String camera_v_down = "d";
+		
 	}
 	
 	
@@ -184,15 +173,10 @@ public class Set extends Activity {
 				// TODO Auto-generated method stub
 				dialog.dismiss();
 				
-				controlAddr_temp=et_controlAddr.getText().toString();
-				controlPort_temp=et_controlPort.getText().toString();
-				videoAddr_temp=et_videoAddr.getText().toString();
-				videoPort_temp=et_videoPort.getText().toString();
-				
-				System_data.controlAddr_store=controlAddr_temp;
-				System_data.controlPort_store=controlPort_temp;
-				System_data.videoAddr_store=videoAddr_temp;
-				System_data.videoPort_store=videoPort_temp;
+				System_data.controlAddr_store=et_controlAddr.getText().toString();
+				System_data.controlPort_store=et_controlPort.getText().toString();
+				System_data.videoAddr_store=et_videoAddr.getText().toString();
+				System_data.videoPort_store=et_videoPort.getText().toString();
 				
 				
 				et_controlAddr.setText(System_data.controlAddr_store);
@@ -206,10 +190,11 @@ public class Set extends Activity {
 				System_data.right_store = et_right.getText().toString();
 				System_data.stop_store = et_stop.getText().toString();
 
-				System_data.camera_h_store = et_camera_h.getText().toString();
-				System_data.camera_v_store = et_camera_v.getText().toString();
-				System_data.camera_h_num_store =  cb_h_number.isChecked();
-				System_data.camera_v_num_store =  cb_v_number.isChecked();
+				System_data.camera_h_left = et_h_left.getText().toString();
+				System_data.camera_h_right = et_h_right.getText().toString();
+				System_data.camera_v_up = et_v_up.getText().toString();
+				System_data.camera_v_down = et_v_down.getText().toString();
+
 
 				et_up.setText(System_data.up_store);
 				et_down.setText(System_data.down_store);
@@ -217,11 +202,14 @@ public class Set extends Activity {
 				et_right.setText(System_data.right_store);
 				et_stop.setText(System_data.stop_store);
 
-				et_camera_h.setText(System_data.camera_h_store);
-				et_camera_v.setText(System_data.camera_v_store);
-				cb_h_number.setChecked(System_data.camera_h_num_store);
-				cb_v_number.setChecked(System_data.camera_v_num_store);
+				et_h_left.setText(System_data.camera_h_left);
+				et_h_right.setText(System_data.camera_h_right);
+				et_v_up.setText(System_data.camera_v_up);
+				et_v_down.setText(System_data.camera_v_down);
 				
+				//用户数据保存
+				userMsgWriter();
+
 				Intent intent=new Intent();
 				intent.setClass(Set.this, Introduction.class);
 				startActivity(intent);
@@ -249,17 +237,16 @@ public class Set extends Activity {
 				et_right.setText(System_data.right_store);
 				et_stop.setText(System_data.stop_store);
 				
-				et_camera_h.setText(System_data.camera_h_store);
-				et_camera_v.setText(System_data.camera_v_store);
-				cb_h_number.setChecked(System_data.camera_h_num_store);
-				cb_v_number.setChecked(System_data.camera_v_num_store);
+				et_h_left.setText(System_data.camera_h_left);
+				et_h_right.setText(System_data.camera_h_right);
+				et_v_up.setText(System_data.camera_v_up);
+				et_v_down.setText(System_data.camera_v_down);
 				
 				Intent intent=new Intent();
 				intent.setClass(Set.this, Introduction.class);
 				startActivity(intent);
 				Set.this.finish();
 			}
-
 			
 		});
 		
@@ -267,90 +254,46 @@ public class Set extends Activity {
 		
 	}
 	
-	public void dialog_cancel()
+	private void userMsgReader()
 	{
-		AlertDialog.Builder builder=new Builder(Set.this);
-		builder.setMessage("Are you sure to cancel？");
-		builder.setTitle("Tips");
-		builder.setPositiveButton("sure",new DialogInterface.OnClickListener()
-		{
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-				
-				et_controlAddr.setText(System_data.controlAddr_store);
-				et_controlPort.setText(System_data.controlPort_store);
-				et_videoAddr.setText(System_data.videoAddr_store);
-				et_videoPort.setText(System_data.videoPort_store);
-				
-				et_up.setText(System_data.up_store);
-				et_down.setText(System_data.down_store);
-				et_left.setText(System_data.left_store);
-				et_right.setText(System_data.right_store);
-				et_stop.setText(System_data.stop_store);
-				
-				et_camera_h.setText(System_data.camera_h_store);
-				et_camera_v.setText(System_data.camera_v_store);
-				cb_h_number.setChecked(System_data.camera_h_num_store);
-				cb_v_number.setChecked(System_data.camera_v_num_store);
-			}
-			
-		});
+		System_data.videoAddr_store = sharedPreferenecs.getString("et_video_addr", System_data.videoAddr_store);
+		System_data.videoPort_store = sharedPreferenecs.getString("et_video_port", System_data.videoPort_store);
+		System_data.controlAddr_store = sharedPreferenecs.getString("et_ctrl_addr", System_data.controlAddr_store);
+		System_data.controlPort_store = sharedPreferenecs.getString("et_ctrl_port", System_data.controlPort_store);
 		
-		builder.setNegativeButton("cancel", new DialogInterface.OnClickListener()
-		{
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-			
-				
-				controlAddr_temp=et_controlAddr.getText().toString();
-				controlPort_temp=et_controlPort.getText().toString();
-				videoAddr_temp=et_videoAddr.getText().toString();
-				videoPort_temp=et_videoPort.getText().toString();
-				
-				System_data.controlAddr_store=controlAddr_temp;
-				System_data.controlPort_store=controlPort_temp;
-				System_data.videoAddr_store=videoAddr_temp;
-				System_data.videoPort_store=videoPort_temp;
-				
-				
-				et_controlAddr.setText(System_data.controlAddr_store);
-				et_controlPort.setText(System_data.controlPort_store);
-				et_videoAddr.setText(System_data.videoAddr_store);
-				et_videoPort.setText(System_data.videoPort_store);
-				
-				System_data.up_store = et_up.getText().toString();
-				System_data.down_store = et_down.getText().toString();
-				System_data.left_store = et_left.getText().toString();
-				System_data.right_store = et_right.getText().toString();
-				System_data.stop_store = et_stop.getText().toString();
-
-				System_data.camera_h_store = et_camera_h.getText().toString();
-				System_data.camera_v_store = et_camera_v.getText().toString();
-				System_data.camera_h_num_store =  cb_h_number.isChecked();
-				System_data.camera_v_num_store =  cb_v_number.isChecked();
-
-				et_up.setText(System_data.up_store);
-				et_down.setText(System_data.down_store);
-				et_left.setText(System_data.left_store);
-				et_right.setText(System_data.right_store);
-				et_stop.setText(System_data.stop_store);
-
-				et_camera_h.setText(System_data.camera_h_store);
-				et_camera_v.setText(System_data.camera_v_store);
-				cb_h_number.setChecked(System_data.camera_h_num_store);
-				cb_v_number.setChecked(System_data.camera_v_num_store);
-			}
-
-			
-		});
+		System_data.left_store = sharedPreferenecs.getString("left_store", System_data.left_store);
+		System_data.right_store = sharedPreferenecs.getString("right_store",System_data.right_store);
+		System_data.up_store = sharedPreferenecs.getString("up_store",System_data.up_store);
+		System_data.down_store = sharedPreferenecs.getString("down_store",System_data.down_store);
+		System_data.stop_store = sharedPreferenecs.getString("stop_store",System_data.stop_store);
 		
-		builder.create().show();
+		System_data.camera_h_left = sharedPreferenecs.getString("et_h_left",System_data.camera_h_left);
+		System_data.camera_h_right = sharedPreferenecs.getString("et_v_right",System_data.camera_h_right);
+		System_data.camera_v_up = sharedPreferenecs.getString("et_v_up", System_data.camera_v_up);
+		System_data.camera_v_down = sharedPreferenecs.getString("et_v_down", System_data.camera_v_down);
+	
+	}
+	
+	private void userMsgWriter()
+	{
+		//将数据存入xml文件
+		editor.putString("up_store",System_data.up_store);
+		editor.putString("down_store",System_data.down_store);
+		editor.putString("right_store",System_data.right_store);
+		editor.putString("left_store",System_data.left_store);
+		editor.putString("stop_store",System_data.stop_store);
 		
+		editor.putString("et_h_left",System_data.camera_h_left);
+		editor.putString("et_h_right",System_data.camera_h_right);
+		editor.putString("et_v_up",System_data.camera_v_up);
+		editor.putString("et_v_down",System_data.camera_v_down);
+		
+		editor.putString("et_ctrl_addr", System_data.controlAddr_store);
+		editor.putString("et_ctrl_port", System_data.controlPort_store);
+		editor.putString("et_video_addr", System_data.videoAddr_store);
+		editor.putString("et_video_port", System_data.videoPort_store);
+		
+		editor.commit();
 	}
 	
 }

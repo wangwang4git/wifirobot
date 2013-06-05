@@ -21,11 +21,13 @@
     <string name="tv_down">Back</string>
     <string name="tv_right">Right</string>
     <string name="tv_left">Left</string>
-    <string name="tv_camera_h">Horizon</string>
-    <string name="tv_camera_v">Vertical</string>
     <string name="tv_stop">Stop</string>
     <string name="tv_horizon">H</string>
     <string name="tv_vertical">V</string>
+    <string name="tv_h_left">Cam_L</string>
+    <string name="tv_h_right">Cam_R</string>
+    <string name="tv_v_up">Cam_Up</string>
+    <string name="tv_v_down">Cam_Dn</string>
     
 
 </resources>
