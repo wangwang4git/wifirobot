@@ -55,8 +55,8 @@ public class Introduction extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		//getMenuInflater().inflate(R.menu.introduction, menu);
-		menu.add(0, MENU_SET_ID, 0, "设置");
-		menu.add(0,MENU_ABOUT_ID,0,"关于");
+		menu.add(0, MENU_SET_ID, 0, "Setting");
+		menu.add(0,MENU_ABOUT_ID,0,"About");
 		return true;
 	}
 
@@ -102,9 +102,9 @@ public class Introduction extends Activity {
 	public void dialog()
 	{
 		AlertDialog.Builder builder=new Builder(Introduction.this);
-		builder.setMessage("确认退出?");
-		builder.setTitle("提示");
-		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+		builder.setMessage("Are you sure to quit?");
+		builder.setTitle("Tips");
+		builder.setPositiveButton("sure", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -115,7 +115,7 @@ public class Introduction extends Activity {
 			}
 		});
 		
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
