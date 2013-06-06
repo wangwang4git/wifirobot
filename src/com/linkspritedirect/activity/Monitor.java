@@ -35,7 +35,7 @@ public class Monitor extends Activity {
 	private String RETREAT = null;
 	private String LEFT = null;
 	private String RIGHT = null;
-	private String STOP = null;
+	// private String STOP = null;
 
 	private String HORIZON_LEFT = null;
 	private String HORIZON_RIGHT = null;
@@ -55,7 +55,6 @@ public class Monitor extends Activity {
 	private Button bt_v_down;
 	private Button bt_h_left;
 	private Button bt_h_right;
-	
 
 	public MjpegView sv_camera = null;
 	// 缩放模式
@@ -63,7 +62,7 @@ public class Monitor extends Activity {
 
 	private WifiRobotControlClient mClient = null;
 	private Thread mControlThread = null;
-	private Thread mCameraThread = null; 
+	private Thread mCameraThread = null;
 	private Handler mHandler = null;
 
 	// 系统Sensor管理器
@@ -77,9 +76,11 @@ public class Monitor extends Activity {
 	private CheckBox mCtrlModel = null;
 	private TextView tv_ctrl_model = null;
 	private boolean isButtonModel = true;
-	
+
 	private boolean isSocketInitEnd = false;
 	private boolean isEndCameraInitEnd = false;
+
+	private float[] values = { 0, 0, 0 };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +100,12 @@ public class Monitor extends Activity {
 		isSocketInitEnd = false;
 		isEndCameraInitEnd = false;
 		isOpenSensor = false;
-		
+
 		ADVANCE = System_data.up_store;
 		RETREAT = System_data.down_store;
 		LEFT = System_data.left_store;
 		RIGHT = System_data.right_store;
-		STOP = System_data.stop_store;
+		// STOP = System_data.stop_store;
 
 		HORIZON_LEFT = System_data.camera_h_left;
 		HORIZON_RIGHT = System_data.camera_h_right;
@@ -126,7 +127,7 @@ public class Monitor extends Activity {
 		bt_v_down = (Button) findViewById(R.id.bt_v_down);
 		bt_h_left = (Button) findViewById(R.id.bt_h_left);
 		bt_h_right = (Button) findViewById(R.id.bt_h_right);
-		
+
 		bt_v_up.setOnTouchListener(new ClickEvent());
 		bt_v_down.setOnTouchListener(new ClickEvent());
 		bt_h_left.setOnTouchListener(new ClickEvent());
@@ -143,7 +144,7 @@ public class Monitor extends Activity {
 		sv_camera = (MjpegView) findViewById(R.id.sv);
 		// 设置自定义双击事件监听器
 		sv_camera.setOnTouchListener(new cameraOnTouchListener());
-		
+
 		mCameraThread = new Thread(new Runnable() {
 			public void run() {
 				String cameraURL = "http://"
@@ -198,6 +199,48 @@ public class Monitor extends Activity {
 							"Video access failure", Toast.LENGTH_SHORT).show();
 					break;
 				}
+				case 5: {
+					// values[1] < -5，向左；values[1] > 5，向右
+					// values[0] > 5，向后；values[0] < -5，向前
+					if (values[0] < -5) {
+						mClient.send(ADVANCE);
+					} else if (values[0] > 5) {
+						mClient.send(RETREAT);
+					}
+					if (values[1] > 5) {
+						mClient.send(RIGHT);
+					} else if (values[1] < -5) {
+						mClient.send(LEFT);
+					}
+					break;
+				}
+				case 6: {
+					if (bt_advance.isPressed()) {
+						mClient.send(ADVANCE);
+					}
+					if (bt_retreat.isPressed()) {
+						mClient.send(RETREAT);
+					}
+					if (bt_right.isPressed()) {
+						mClient.send(RIGHT);
+					}
+					if (bt_left.isPressed()) {
+						mClient.send(LEFT);
+					}
+					if (bt_v_up.isPressed()) {
+						mClient.send(VERTICAL_UP);
+					}
+					if (bt_v_down.isPressed()) {
+						mClient.send(VERTICAL_DOWN);
+					}
+					if (bt_h_left.isPressed()) {
+						mClient.send(HORIZON_LEFT);
+					}
+					if (bt_h_right.isPressed()) {
+						mClient.send(HORIZON_RIGHT);
+					}
+					break;
+				}
 				default: {
 					break;
 				}
@@ -212,7 +255,7 @@ public class Monitor extends Activity {
 				Integer.parseInt(System_data.controlPort_store.trim()));
 		mControlThread = new Thread(mClient);
 		mControlThread.start();
-		
+
 		// 获取系统的传感器管理服务
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		accelerometerListener = new AccelerometerOnTouchListener();
@@ -335,7 +378,7 @@ public class Monitor extends Activity {
 					}
 				});
 		isOpenSensor = false;
-		
+
 		Thread background = new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -361,6 +404,8 @@ public class Monitor extends Activity {
 			}
 		});
 		background.start();
+
+		new Thread(new TimeThread()).start();
 	}
 
 	@Override
@@ -397,11 +442,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(ADVANCE);
+					// mClient.send(ADVANCE);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -414,11 +459,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(RETREAT);
+					// mClient.send(RETREAT);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -431,11 +476,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(RIGHT);
+					// mClient.send(RIGHT);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -448,11 +493,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(LEFT);
+					// mClient.send(LEFT);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -465,12 +510,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(VERTICAL_UP);
-					System.out.println(VERTICAL_UP);
+					// mClient.send(VERTICAL_UP);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -483,12 +527,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(VERTICAL_DOWN);
-					System.out.println(VERTICAL_DOWN);
+					// mClient.send(VERTICAL_DOWN);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -501,12 +544,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(HORIZON_LEFT);
-					System.out.println(HORIZON_LEFT);
+					// mClient.send(HORIZON_LEFT);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -519,12 +561,11 @@ public class Monitor extends Activity {
 				int action = event.getAction();
 				switch (action) {
 				case MotionEvent.ACTION_DOWN: {
-					mClient.send(HORIZON_RIGHT);
-					System.out.println(HORIZON_RIGHT);
+					// mClient.send(HORIZON_RIGHT);
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					mClient.send(STOP);
+					// mClient.send(STOP);
 					break;
 				}
 				default: {
@@ -664,26 +705,33 @@ public class Monitor extends Activity {
 		public void onSensorChanged(SensorEvent event) {
 			// TODO Auto-generated method stub
 			if (isOpenSensor) {
-				float[] values = event.values;
+				values = event.values;
 				// values[0] X方向上的加速度
 				// values[1] Y方向上的加速度
 				// values[2] Z方向上的加速度
+			}
+		}
+	}
 
-				// values[1] < -5，向左；values[1] > 5，向右
-				// values[0] > 5，向后；values[0] < -5，向前
-				if (values[0] < -5) {
-					mClient.send(ADVANCE);
-					System.out.println(ADVANCE);
-				} else if (values[0] > 5) {
-					mClient.send(RETREAT);
-					System.out.println(RETREAT);
-				}
-				if (values[1] > 5) {
-					mClient.send(RIGHT);
-					System.out.println(RIGHT);
-				} else if (values[1] < -5) {
-					mClient.send(LEFT);
-					System.out.println(LEFT);
+	public class TimeThread implements Runnable {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while (true) {
+				try {
+					Thread.sleep(System_data.gravity);
+					if (isOpenSensor) {
+						Message message = new Message();
+						message.what = 5;
+						mHandler.sendMessage(message);
+					} else {
+						Message message = new Message();
+						message.what = 6;
+						mHandler.sendMessage(message);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

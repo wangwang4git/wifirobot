@@ -38,6 +38,9 @@ public class Set extends Activity {
 	private EditText et_v_up = null;
 	private EditText et_v_down = null;
 	
+	// 重力感应时间间隔
+	private EditText et_gravity = null;
+	
 	//保存按钮
 	public Button bt_save; 
 	
@@ -72,14 +75,13 @@ public class Set extends Activity {
 		et_v_up = (EditText) findViewById(R.id.et_v_up);
 		et_v_down = (EditText) findViewById(R.id.et_v_down);
 		
+		et_gravity = (EditText) findViewById(R.id.et_gravity);
+		
 		bt_save=(Button)findViewById(R.id.bt_save);
 		
 		//用户数据保存功能的初始化
 		sharedPreferenecs = this.getSharedPreferences("user", MODE_WORLD_READABLE);
 		editor = sharedPreferenecs.edit();
-		
-		//读取用户上次输入的信息
-		userMsgReader();
 		
 		//初始化话设置界面的各项数据
 		et_controlAddr.setText(System_data.controlAddr_store);
@@ -97,6 +99,8 @@ public class Set extends Activity {
 		et_h_right.setText(System_data.camera_h_right);
 		et_v_up.setText(System_data.camera_v_up);
 		et_v_down.setText(System_data.camera_v_down);
+		
+		et_gravity.setText(System_data.gravity + "");
 		
 		//保存按钮的功能实现
 		bt_save.setOnClickListener(new bt_clickEvent());
@@ -144,6 +148,7 @@ public class Set extends Activity {
 		public static String camera_v_up = "v";
 		public static String camera_v_down = "d";
 		
+		public static int gravity = 100;
 	}
 	
 	
@@ -207,6 +212,16 @@ public class Set extends Activity {
 				et_v_up.setText(System_data.camera_v_up);
 				et_v_down.setText(System_data.camera_v_down);
 				
+				try {
+					System_data.gravity = Integer.parseInt(et_gravity
+							.getText().toString().trim());
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				et_gravity.setText(System_data.gravity + "");
+				
+				
 				//用户数据保存
 				userMsgWriter();
 
@@ -242,6 +257,8 @@ public class Set extends Activity {
 				et_v_up.setText(System_data.camera_v_up);
 				et_v_down.setText(System_data.camera_v_down);
 				
+				et_gravity.setText(System_data.gravity + "");
+				
 				Intent intent=new Intent();
 				intent.setClass(Set.this, Introduction.class);
 				startActivity(intent);
@@ -252,26 +269,6 @@ public class Set extends Activity {
 		
 		builder.create().show();
 		
-	}
-	
-	private void userMsgReader()
-	{
-		System_data.videoAddr_store = sharedPreferenecs.getString("et_video_addr", System_data.videoAddr_store);
-		System_data.videoPort_store = sharedPreferenecs.getString("et_video_port", System_data.videoPort_store);
-		System_data.controlAddr_store = sharedPreferenecs.getString("et_ctrl_addr", System_data.controlAddr_store);
-		System_data.controlPort_store = sharedPreferenecs.getString("et_ctrl_port", System_data.controlPort_store);
-		
-		System_data.left_store = sharedPreferenecs.getString("left_store", System_data.left_store);
-		System_data.right_store = sharedPreferenecs.getString("right_store",System_data.right_store);
-		System_data.up_store = sharedPreferenecs.getString("up_store",System_data.up_store);
-		System_data.down_store = sharedPreferenecs.getString("down_store",System_data.down_store);
-		System_data.stop_store = sharedPreferenecs.getString("stop_store",System_data.stop_store);
-		
-		System_data.camera_h_left = sharedPreferenecs.getString("et_h_left",System_data.camera_h_left);
-		System_data.camera_h_right = sharedPreferenecs.getString("et_v_right",System_data.camera_h_right);
-		System_data.camera_v_up = sharedPreferenecs.getString("et_v_up", System_data.camera_v_up);
-		System_data.camera_v_down = sharedPreferenecs.getString("et_v_down", System_data.camera_v_down);
-	
 	}
 	
 	private void userMsgWriter()
@@ -292,6 +289,8 @@ public class Set extends Activity {
 		editor.putString("et_ctrl_port", System_data.controlPort_store);
 		editor.putString("et_video_addr", System_data.videoAddr_store);
 		editor.putString("et_video_port", System_data.videoPort_store);
+		
+		editor.putInt("et_gravity", System_data.gravity);
 		
 		editor.commit();
 	}
